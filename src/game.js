@@ -7,14 +7,41 @@ class Game {
     this.bg = new Background(ctx);
     this.helicopter = new Helicopter(ctx);
     this.obstacles = [];
+
+    
+    // Add event listeners for keydown and keyup once
+    document.addEventListener("keydown", (e) => {
+      this.onKeyDown(e);
+    });
+
+    document.addEventListener("keyup", (e) => {
+      this.onKeyUp(e);
+    });
   }
 
   start() {
-    // TODO: loop. clear, draw, move, addObstacle
+    
+    this.interval = setInterval(() => {
+      this.clear();
+
+      this.draw();
+
+      this.move();
+
+      if (this.tick % 100 === 0) {
+        this.addObstacle();
+      }
+      this.tick++;
+
+    }, 1000 / 60);
   }
+  
 
   addObstacle() {
-    // TODO: add new Obstacle every 100 ticks
+    const newObstacle = new Obstacle(this.ctx);
+    this.obstacles.push(newObstacle);
+
+    this.obstacles = this.obstacles.filter((e) => e.x +e.w > 0);
   }
 
   clear() {
@@ -22,14 +49,24 @@ class Game {
   }
 
   draw() {
-    // TODO: draw everything
+    this.bg.draw();
+    this.obstacles.forEach((e) => e.draw());
+    this.helicopter.draw();
   }
 
   move() {
-    // TODO: move everything
+    this.bg.move();
+    this.helicopter.move();
+    this.obstacles.forEach(obstacle => obstacle.move());
+    this.obstacles = this.obstacles.filter(obstacle => obstacle.isVisible());
   }
 
-  onKeyEvent(event) {
-    // TODO
+  onKeyDown(e) {
+    this.helicopter.onKeyDown(e.keyCode);  // Pass the key code to the player's `onKeyDown` method
+  }
+
+  // Call this method when a key is released
+  onKeyUp(e) {
+    this.helicopter.onKeyUp(e.keyCode);  // Pass the key code to the player's `onKeyUp` method
   }
 }

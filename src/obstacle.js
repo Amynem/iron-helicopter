@@ -10,6 +10,7 @@ class Obstacle {
   }
 
   draw() {
+    this.ctx.fillStyle = "black";
     this.ctx.fillRect(
       this.x,
       this.y,
